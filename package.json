@@ -1,0 +1,22 @@
+{
+    "name": "jstrument",
+    "preferGlobal": "false",
+    "version": "0.1.0",
+    "author": "Patryk Hes <pathes@pathes.pl>",
+    "description": "TODO",
+    "scripts": {
+        "start": "node --harmony server.js"
+    },
+    "keywords": [
+        "TODO"
+    ],
+    "dependencies": {
+        "socket.io": "*",
+        "lodash": "*",
+        "node-osc": "*"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.8"
+    }
+}
