@@ -6,13 +6,24 @@ const _ = require('lodash');
 
 function Server(config) {
 
-    // Load required libraries.
-    const http = require('http');
-    const io = require('socket.io');
-    const fs = require('fs');
-    const osc = require('node-osc');
+    // Internal libraries
 
+    // External libraries
+    const express = require('express');
+    const io = require('socket.io');
+    const osc = require('node-osc');
+    const sass = require('node-sass');
+
+    // Reference to this object
     const Server = this;
+    _(Server).assign({
+        canStart: true,
+        debugList: [
+            'socket.io',
+        ],
+    })
+
+    // Set default settings.
     const defaultConfig = {
         httpPort: 8888,
         oscPort: 57120,
@@ -25,7 +36,7 @@ function Server(config) {
         _(Server.config).assign(config);
     }
 
-    Server.canStart = true;
+
 
     // Validate ports.
     function validatePort(portName) {
@@ -38,50 +49,59 @@ function Server(config) {
     validatePort('httpPort');
     validatePort('oscPort');
 
-    _(Server).assign({
-        onRequest: function onRequest(request, response) {
-            var url = request.url;
-            if (url == '/') {
-                url = '/client.html';
-            }
-            fs.readFile(
-                __dirname + url,
-                function (err, data) {
-                    if (err) {
-                        response.writeHead(500);
-                        return response.end('Error loading file');
-                    }
-                    response.writeHead(200);
-                    response.end(data);
-                }
-            );
-        },
-        run: function run() {
-            if (!Server.canStart) {
-                return;
-            }
-            // Run socket.io.
-            Server.io = io.listen(Server.server, {log: false});
-            // Run HTTP server.
-            Server.server.listen(Server.config.httpPort);
-            // Run OSC client
-            Server.oscClient = new osc.Client(
-                Server.config.oscHost,
-                Server.config.oscPort
-            );
+    // Create app
+    Server.app = express();
 
-            // Set socket.io's reactions.
-            Server.io.sockets.on('connection', function onConnection(socket) {
-                socket.on('foo', function foo(freq, vol) {
-                    Server.oscClient.send('/foo', freq, vol);
-                });
-                socket.on('log', function log(x) {
-                    console.log(x);
-                });
-            });
-        },
+    // Configure app
+    Server.app.configure(function () {
+        Server.app.use(sass.middleware({
+            src: __dirname + '/app',
+            dest: __dirname + '/static',
+            debug: true,
+        }));
     });
-    Server.server = http.createServer(Server.onRequest);
+
+    // Routing
+    Server.app.get('/', function(req, res) {
+       res.sendfile(__dirname + '/app/base.html');
+    });
+    Server.app.get('/js/*', function(req, res) {
+        res.sendfile(__dirname + '/app' + req.url);
+    });
+    Server.app.use(express.compress());
+    Server.app.use(express.static(__dirname + '/static'));
+
+    // Public methods
+    Server.run = function run() {
+        if (!Server.canStart) {
+            return;
+        }
+        // Run HTTP server.
+        Server.server = Server.app.listen(Server.config.httpPort);
+        // Run socket.io.
+        Server.io = io.listen(Server.server, {
+            log: _(Server.debugList).contains('socket.io'),
+        });
+        // Run OSC client.
+        Server.oscClient = new osc.Client(
+            Server.config.oscHost,
+            Server.config.oscPort
+        );
+
+        // Set socket.io's reactions.
+        Server.io.sockets.on('connection', function onConnection(socket) {
+            socket.on('oscOn', function foo(id, freq, vol) {
+                Server.oscClient.send('/oscOn', id, freq, vol);
+            });
+            socket.on('oscOff', function foo(id) {
+                Server.oscClient.send('/oscOff', id);
+            });
+            socket.on('log', function log(x) {
+                console.log(x);
+            });
+        });
+    };
+    
 }
 
 const server = new Server();
