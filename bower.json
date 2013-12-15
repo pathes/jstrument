@@ -1,0 +1,29 @@
+{
+  "name": "jstrument",
+  "version": "0.0.0",
+  "homepage": "https://github.com/pathes/jstrument",
+  "authors": [
+    "Patryk Hes <pathes@pathes.pl>"
+  ],
+  "description": "a browser tool for creating & live editing SC synths",
+  "main": "server.js",
+  "keywords": [
+    "supercollider",
+    "synthesizer"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.5",
+    "jquery": "~2.0.3",
+    "lodash": "~2.4.1",
+    "modernizr": "~2.7.1"
+  }
+}

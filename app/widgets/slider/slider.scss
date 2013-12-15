@@ -1,0 +1,55 @@
+@import '../../mixins.scss';
+$hue: 96;
+$margin: 5px;
+
+jst-slider {
+    @include disable-select();
+    display: block;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    position: relative;
+
+    .container {
+        width: 100%;
+        height: 100%;
+        border: $margin solid hsla($hue, 50, 25, 1);
+        background: hsla($hue, 50, 50, 0.15);
+        overflow: hidden;
+        position: relative;
+    }
+    .bar {
+        background: hsla($hue, 50, 50, 1);
+        cursor: pointer;
+        position: absolute;
+    }
+    p {
+        width: 100%;
+        margin: 0;
+        padding: $margin;
+        background: hsla($hue, 50, 25, 1);
+        color: white;
+        font-family: 'Comfortaa';
+        text-align: center;
+        font-size: 12px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+
+    // Orienting bar
+    &[direction=top] .bar {
+        bottom: 0;
+    }
+    &[direction=right] .bar {
+        left: 0;
+        height: 100%;
+    }
+    &[direction=bottom] .bar {
+        top: 0;
+    }
+    &[direction=left] .bar {
+        right: 0;
+        height: 100%;
+    }
+}

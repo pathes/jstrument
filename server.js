@@ -15,46 +15,44 @@ function Server(config) {
     const sass = require('node-sass');
 
     // Reference to this object
-    const Server = this;
-    _(Server).assign({
+    const server = this;
+    _(server).assign({
         canStart: true,
         debugList: [
             'socket.io',
-        ],
-    })
+        ]
+    });
 
     // Set default settings.
     const defaultConfig = {
         httpPort: 8888,
         oscPort: 57120,
-        oscHost: '127.0.0.1',
+        oscHost: '127.0.0.1'
     };
 
     // Load custom settings.
-    Server.config = _(defaultConfig).clone();
+    server.config = _(defaultConfig).clone();
     if (_.isObject(config)) {
-        _(Server.config).assign(config);
+        _(server.config).assign(config);
     }
-
-
 
     // Validate ports.
     function validatePort(portName) {
-        Server.config[portName] = _.parseInt(Server.config[portName]);
-        if (Server.config[portName] < 1 || Server.config[portName] > 65535) {
+        server.config[portName] = _.parseInt(server.config[portName]);
+        if (server.config[portName] < 1 || server.config[portName] > 65535) {
             console.error(portName + ' should be an integer in range [1..65535].');
-            Server.canStart = false;
+            server.canStart = false;
         }
     }
     validatePort('httpPort');
     validatePort('oscPort');
 
     // Create app
-    Server.app = express();
+    server.app = express();
 
     // Configure app
-    Server.app.configure(function () {
-        Server.app.use(sass.middleware({
+    server.app.configure(function () {
+        server.app.use(sass.middleware({
             src: __dirname + '/app',
             dest: __dirname + '/static',
             debug: true,
@@ -62,42 +60,54 @@ function Server(config) {
     });
 
     // Routing
-    Server.app.get('/', function(req, res) {
-       res.sendfile(__dirname + '/app/base.html');
+    server.app.get('/', function(req, res) {
+        res.sendfile(__dirname + '/app/base/base.html');
     });
-    Server.app.get('/js/*', function(req, res) {
-        res.sendfile(__dirname + '/app' + req.url);
+    _.forEach([
+        '*.html',
+        '*.js',
+        '*.svg',
+    ], function (dir) {
+        server.app.get('/app' + dir, function (req, res) {
+            res.sendfile(__dirname + req.url);
+        });
     });
-    Server.app.use(express.compress());
-    Server.app.use(express.static(__dirname + '/static'));
+    server.app.use(express.compress());
+    server.app.use(express.static(__dirname + '/static'));
+    server.app.use('/components', express.static(__dirname + '/bower_components'));
 
     // Public methods
-    Server.run = function run() {
-        if (!Server.canStart) {
+    server.run = function run() {
+        if (!server.canStart) {
             return;
         }
         // Run HTTP server.
-        Server.server = Server.app.listen(Server.config.httpPort);
+        server.http = server.app.listen(server.config.httpPort);
         // Run socket.io.
-        Server.io = io.listen(Server.server, {
-            log: _(Server.debugList).contains('socket.io'),
+        server.io = io.listen(server.http, {
+            log: _(server.debugList).contains('socket.io'),
         });
         // Run OSC client.
-        Server.oscClient = new osc.Client(
-            Server.config.oscHost,
-            Server.config.oscPort
+        server.oscClient = new osc.Client(
+            server.config.oscHost,
+            server.config.oscPort
         );
 
         // Set socket.io's reactions.
-        Server.io.sockets.on('connection', function onConnection(socket) {
-            socket.on('oscOn', function foo(id, freq, vol) {
-                Server.oscClient.send('/oscOn', id, freq, vol);
-            });
-            socket.on('oscOff', function foo(id) {
-                Server.oscClient.send('/oscOff', id);
-            });
-            socket.on('log', function log(x) {
-                console.log(x);
+        server.io.sockets.on('connection', function onConnection(socket) {
+            _.forIn({
+                oscOn: function foo(id, freq, vol) {
+                    console.log(freq);
+                    server.oscClient.send('/oscOn', id, freq, vol);
+                },
+                oscOff: function foo(id) {
+                    server.oscClient.send('/oscOff', id);
+                },
+                log: function log(x) {
+                    console.log(x);
+                }
+            }, function (callback, key) {
+                socket.on(key, callback);
             });
         });
     };

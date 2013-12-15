@@ -3,7 +3,7 @@
     "preferGlobal": "false",
     "version": "0.0.1",
     "author": "Patryk Hes <pathes@pathes.pl>",
-    "description": "TODO",
+    "description": "a browser tool for creating & live editing SC synths",
     "scripts": {
         "start": "node --harmony server.js"
     },
