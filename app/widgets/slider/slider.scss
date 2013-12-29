@@ -19,19 +19,18 @@ jst-slider {
         position: relative;
     }
     .bar {
+        width: 100%;
         background: hsla($hue, 50, 50, 1);
         cursor: pointer;
         position: absolute;
     }
     p {
+        @include main-font;
         width: 100%;
         margin: 0;
         padding: $margin;
         background: hsla($hue, 50, 25, 1);
         color: white;
-        font-family: 'Comfortaa';
-        text-align: center;
-        font-size: 12px;
         position: absolute;
         top: 100%;
         left: 0;

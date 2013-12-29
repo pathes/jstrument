@@ -1,0 +1,6 @@
+<ul>
+    <li ng-repeat="pane in panes" ng-class="{active: pane.selected}">
+        <button ng-click="selectPane(pane)">{{ pane.title }}</button>
+    </li>
+</ul>
+<div ng-transclude></div>

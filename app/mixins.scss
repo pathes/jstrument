@@ -4,3 +4,8 @@
     -ms-user-select: none;
     user-select: none;
 }
+@mixin main-font {
+    font-family: 'Comfortaa';
+    text-align: center;
+    font-size: 14px;
+}

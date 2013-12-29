@@ -1,7 +1,7 @@
 (function () {
-    "use strict";
+    'use strict';
 
-    angular.module('jstBasic', ['jstSlider'])
+    angular.module('jstBasic', ['jstSlider', 'jstTabs'])
 
         .directive('jstBasic', function ($rootScope) {
             return {

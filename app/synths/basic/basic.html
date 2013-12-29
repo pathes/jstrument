@@ -1,6 +1,20 @@
-<jst-slider min="440" max="880" direction="right" ng-model="freq" title="'freq'"
-            style="position: absolute; top: 10%; left: 10%; width: 80%; height: 30%"
-            callback="callback"></jst-slider>
-<jst-slider min="0" max="1" direction="right" ng-model="vol" title="'vol'"
-            style="position: absolute; top: 60%; left: 10%; width: 80%; height: 30%"
-            callback="callback"></jst-slider>
+<jst-tabs>
+    <jst-pane title="synth">
+        <jst-slider min="440" max="880" direction="right" ng-model="freq" title="'freq'"
+                    style="position: absolute; top: 10%; left: 10%; width: 80%; height: 30%"
+                    callback="callback"></jst-slider>
+        <jst-slider min="0" max="1" direction="right" ng-model="vol" title="'vol'"
+                    style="position: absolute; top: 60%; left: 10%; width: 80%; height: 30%"
+                    callback="callback"></jst-slider>
+    </jst-pane>
+    <jst-pane title="info">
+        <jst-tabs>
+            <jst-pane title="lorem">
+
+            </jst-pane>
+            <jst-pane title="ipsum">
+
+            </jst-pane>
+        </jst-tabs>
+    </jst-pane>
+</jst-tabs>
