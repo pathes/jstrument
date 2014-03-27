@@ -8,7 +8,9 @@
                 restrict: 'E',
                 transclude: true,
                 replace: false,
-                scope: {},
+                scope: {
+                    synthParams: '=',
+                },
                 templateUrl: '/app/widgets/tabs/tabs.html',
                 controller: function ($scope) {
                     var panes = $scope.panes = [];
@@ -36,7 +38,8 @@
                 restrict: 'E',
                 transclude: true,
                 scope: {
-                    title: '@'
+                    title: '@',
+                    synthParams: '=',
                 },
                 link: function (scope, element, attrs, jstTabsCtrl) {
                     jstTabsCtrl.addPane(scope);

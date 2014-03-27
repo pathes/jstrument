@@ -1,9 +1,9 @@
-<jst-tabs>
+<jst-tabs freq="freq" vol="vol">
     <jst-pane title="synth">
-        <jst-slider min="440" max="880" direction="right" ng-model="freq" title="'freq'"
+        <jst-slider min="440" max="880" direction="right" ng-model="synthParams.freq" title="'freq'"
                     style="position: absolute; top: 10%; left: 10%; width: 80%; height: 30%"
                     callback="callback"></jst-slider>
-        <jst-slider min="0" max="1" direction="right" ng-model="vol" title="'vol'"
+        <jst-slider min="0" max="1" direction="right" ng-model="synthParams.vol" title="'vol'"
                     style="position: absolute; top: 60%; left: 10%; width: 80%; height: 30%"
                     callback="callback"></jst-slider>
     </jst-pane>

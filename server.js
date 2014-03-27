@@ -97,7 +97,6 @@ function Server(config) {
         server.io.sockets.on('connection', function onConnection(socket) {
             _.forIn({
                 oscOn: function foo(id, freq, vol) {
-                    console.log(freq);
                     server.oscClient.send('/oscOn', id, freq, vol);
                 },
                 oscOff: function foo(id) {
